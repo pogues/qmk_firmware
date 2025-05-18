@@ -1,7 +1,6 @@
 #include "pogues.h"
 
 
-static bool vscode = true;
 uint8_t vscode_compose_mapping(uint16_t* sequence, uint8_t sequence_len);
 uint8_t qzdev_compose_mapping(uint16_t* sequence, uint8_t sequence_len);
 
@@ -130,11 +129,6 @@ bool caps_word_press_user(uint16_t keycode) {
     }
 }
 
-void toggle_dev_env(void) {
-    // TODO move out and look at lighting options?
-    vscode = !vscode;
-}
-
 /******************************************************************************
  * compose key mapping function
  ******************************************************************************/
@@ -167,24 +161,11 @@ uint8_t compose_mapping(uint16_t* sequence, uint8_t sequence_len) {
         { SEND_STRING(SS_LGUI(SS_LSFT("l"))); }
     )
 
-    // set the mode to qzdev or vscode
-    COMPOSE_MAPPING(
-        COMPOSE_INPUT(KC_M),
-        { toggle_dev_env(); }
-    )
-
-    if (vscode) {
-        return vscode_compose_mapping(sequence, sequence_len);
-    } else {
-        return qzdev_compose_mapping(sequence, sequence_len);
-    }
-}
-
-uint8_t vscode_compose_mapping(uint16_t* sequence, uint8_t sequence_len) {
+    // VS CODE MAPPINGS
     // open file (quick open/goto file)
     COMPOSE_MAPPING(
         COMPOSE_INPUT(KC_O),
-        // for some reason this does not wor{ SEND_STRING(SS_LCTL(SS_LALT("o"))); }
+        // for some reason this does not work { SEND_STRING(SS_LCTL(SS_LALT("o"))); }
         { tap_code(KC_F13); }
     )
     COMPOSE_MAPPING(
@@ -203,10 +184,6 @@ uint8_t vscode_compose_mapping(uint16_t* sequence, uint8_t sequence_len) {
         { tap_code(KC_F9); }   // changed to match qzdev
     )
     // run selected text
-    //COMPOSE_MAPPING(
-        //COMPOSE_INPUT(KC_R, KC_T),
-        //{ SEND_STRING(SS_LSFT(SS_TAP(X_ENT))); }
-    //)
     COMPOSE_MAPPING_MEH(KC_R, KC_T, "r")    // run text
 
     // Guesses that we can add shortcuts to vscode for these...
@@ -262,76 +239,9 @@ uint8_t vscode_compose_mapping(uint16_t* sequence, uint8_t sequence_len) {
     // show/hide the bottom pane
     COMPOSE_MAPPING_MEH(KC_S, KC_B, "y")
 
-    // assume we are called last
+    // no compose found so error case
     return COMPOSE_ERROR;
 }
-
-uint8_t qzdev_compose_mapping(uint16_t* sequence, uint8_t sequence_len) {
-    // hold the mappings that apply to qzdev, must be called last
-    // open a file
-    COMPOSE_MAPPING(
-        COMPOSE_INPUT(KC_O),
-        { SEND_STRING(SS_LCTL(SS_LSFT("o"))); }
-    )
-
-    // diff current
-    COMPOSE_MAPPING_CTL_SFT(KC_D, KC_C, "g")
-    // diff approved
-    COMPOSE_MAPPING_CTL_SFT(KC_D, KC_A, "v")
-    // diff prod
-    COMPOSE_MAPPING_CTL_SFT(KC_D, KC_P, "p")
-    // diff head
-    COMPOSE_MAPPING_CTL_SFT(KC_D, KC_H, "e")
-    // diff against version
-    COMPOSE_MAPPING_CTL_SFT(KC_D, KC_V, "d")
-
-    // vc blame
-    COMPOSE_MAPPING_CTL_SFT(KC_V, KC_B, "b")
-    // vc log
-    COMPOSE_MAPPING_CTL_SFT(KC_V, KC_L, "l")
-
-    // run test function
-    COMPOSE_MAPPING(
-        COMPOSE_INPUT(KC_T, KC_F),
-        { SEND_STRING(SS_LCTL(SS_TAP(X_F10))); }
-    )
-    // run test module
-    COMPOSE_MAPPING(
-        COMPOSE_INPUT(KC_T, KC_S),
-        { SEND_STRING(SS_LCTL(SS_LALT(SS_TAP(X_F10)))); }
-    )
-
-    // run script
-    COMPOSE_MAPPING(
-        COMPOSE_INPUT(KC_R, KC_S),
-        { tap_code(KC_F9); }
-    )
-    // run script with restart
-    COMPOSE_MAPPING(
-        COMPOSE_INPUT(KC_R, KC_R),
-        { SEND_STRING(SS_LCTL(SS_TAP(X_F9))); }
-    )
-    // run selected text
-    COMPOSE_MAPPING(
-        COMPOSE_INPUT(KC_R, KC_T),
-        { SEND_STRING(SS_LALT(SS_TAP(X_F9))); }
-    )
-
-
-    // focus commands
-    // focus on the shell
-    COMPOSE_MAPPING_ALT(KC_F, KC_S, "s")
-    // focus on the editor
-    COMPOSE_MAPPING_ALT(KC_F, KC_E, "t")
-    // toggle between shell/editor
-    COMPOSE_MAPPING_ALT(KC_F, KC_F, SS_TAP(X_GRV))
-    // select an open buffer
-    COMPOSE_MAPPING_CTL(KC_F, KC_B, "b")
-
-    // assume we are called last
-    return COMPOSE_ERROR;
-}
-
 
 
 
