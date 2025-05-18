@@ -73,7 +73,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //,-----------------------------------------------------.                    ,-----------------------------------------------------.
             XXXXXXX, XXXXXXX, KC_LCTL, ALT_TAB, RGB_VAI, RGB_TOG,                      KC_PGUP, KC_HOME,   KC_UP,  KC_END, XXXXXXX, XXXXXXX,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-              KC_NO, OSM_ALT, OSM_GUI, OSM_CTL, OSM_SFT,   KC_NO,                      KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT,  KC_ENT, KC_DEL,
+              KC_NO, OSM_ALT, OSM_GUI, OSM_CTL, OSM_SFT,   KC_NO,                      KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT,    KC_O, KC_DEL,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
             XXXXXXX, C(KC_Z), C(KC_X), C(KC_C),   KC_NO, C(KC_V),                        KC_NO, KC_PGDN, KC_PGUP,   KC_NO,   KC_NO, XXXXXXX,
         //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -159,7 +159,7 @@ void matrix_scan_user(void) {
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case CTL_Y:
-            return TAPPING_TERM - 40;
+            return TAPPING_TERM - 35;
         default:
             return TAPPING_TERM;
     }
@@ -185,6 +185,7 @@ enum combo_keys {
     SYM_ENT,
     NUM_ENT,
     FUN_ENT,
+    MOV_ENT,
 
     // both hands, not using pl / fu any more due to typing mishits
     WY_LFUN,
@@ -215,6 +216,7 @@ const uint16_t PROGMEM combo_ent[] = {KC_H, KC_COMM, COMBO_END};
 const uint16_t PROGMEM combo_sent[] = {KC_LT, KC_GT, COMBO_END};
 const uint16_t PROGMEM combo_fent[] = {KC_F1, KC_F2, COMBO_END};
 const uint16_t PROGMEM combo_nent[] = {KC_1, KC_2, COMBO_END};
+const uint16_t PROGMEM combo_ment[] = {KC_PGDN, KC_PGUP, COMBO_END};
 
 const uint16_t PROGMEM combo_function[] = {CTL_W, CTL_Y, COMBO_END};
 const uint16_t PROGMEM combo_mouse[] = {SFT_Z, SFT_SLS, COMBO_END};
@@ -239,6 +241,7 @@ combo_t key_combos[] = {
     [SYM_ENT] = COMBO(combo_sent, KC_ENT),
     [NUM_ENT] = COMBO(combo_nent, KC_ENT),
     [FUN_ENT] = COMBO(combo_fent, KC_ENT),
+    [MOV_ENT] = COMBO(combo_ment, KC_ENT),
 
     [WY_LFUN] = COMBO(combo_function, TO(LFUN)),
 #ifdef MOUSEKEY_ENABLE
